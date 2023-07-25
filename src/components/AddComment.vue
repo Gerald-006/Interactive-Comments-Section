@@ -2,7 +2,7 @@
   <div id="comments" class="bg-white rounded-2 mb-1 pt-3">
 
             <div id="image-div" class="d-none d-md-block">
-                <img src="../assets/avatars/image-juliusomo.png" alt="juliusomo">
+                <!-- <img :src="currentUser.image" :alt="currentUser.username"> -->
             </div>
 
             <form @submit="handleSend" id="text-area" class="">
@@ -13,7 +13,7 @@
 
             <div id="newone" class="d-flex d-md-none">
                 <div id="image-div">
-                    <img src="../assets/avatars/image-juliusomo.png" alt="juliusomo">
+                    <!-- <img :src="currentUser.image" :alt="currentUser.username"> -->
                 </div>
                     <form @submit="handleSend">
                         <button  class="rounded-2">SEND</button>
@@ -27,29 +27,29 @@
 
 <script>
 export default {
-    props:['data'],
     data() {
         return {
-            commentText: null
+            commentText: null,
+            currentUser: []
         }
     },
 
     methods: {
         handleSend() {     
-            location.reload()       
+            location.reload()  
+        const timestamp = new Date().toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        });
     const newComment = {
-          id: 5,
+          id: Date.now(),
+          user_id:4,
           content: this.commentText,
-          createdAt: "now",
           score: 0,
-          user: {
-            image: {
-              png: "./image-juliusomo.png",
-              webp: "./image-juliusomo.webp",
-            },
-            username: "juliusomo",
-          },
-          replies: [],
+          parent_comment_id: null,
+          created_at: timestamp,
+          updated_at: timestamp
     };        
 
     fetch('http://localhost:3000/comments', {
@@ -60,7 +60,7 @@ export default {
     .catch(err => console.log(err))
     console.log("push reached")
     }
-    },
+    }
 }
 </script>
 

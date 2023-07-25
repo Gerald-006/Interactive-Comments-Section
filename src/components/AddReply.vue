@@ -2,21 +2,25 @@
   <div id="comments" class="bg-white rounded-2 mb-1 pt-3">
 
             <div id="image-div" class="d-none d-md-block">
-                <img src="../assets/avatars/image-juliusomo.png" alt="juliusomo">
+                <!-- <img :src="currentUser.image" :alt="currentUser.username"> -->
             </div>
 
-            <form id="text-area" class="">
-                <textarea v-model="text" name="addcomment" id="addcomment" class="rounded-2 p-2" placeholder="Add a reply..."></textarea>
+            <form id="text-area" class="" @submit="handleSendReply">
+                <textarea v-model="text" name="addcomment" id="addcomment" class="rounded-2 p-2" placeholder="Add a comment" ></textarea>
+                <button class="rounded-2 d-none d-md-block">REPLY</button>
             </form>
 
-            <button class="rounded-2 d-none d-md-block">REPLY</button>
+            
 
             <div id="newone" class="d-flex d-md-none">
                 <div id="image-div">
-                    <img src="../assets/avatars/image-juliusomo.png" alt="juliusomo">
+                    <!-- <img :src="currentUser.image" :alt="currentUser.username"> -->
                 </div>
 
-                <button class="rounded-2">SEND</button>          
+                <form @submit="handleSendReply">
+                    <button class="rounded-2">SEND</button>      
+                </form>
+                    
             </div>
             
     </div>
@@ -25,14 +29,45 @@
 
 <script>
 export default {
+    props: ['comment', 'reply'],
     data(){
         return{
-            text:""
+            text:"",
+            currentUser:[]
         }
     },
-    updated() {
-        console.log(this.text);
+
+    methods: {
+        handleSendReply() {     
+            location.reload()  
+        const timestamp = new Date().toLocaleString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        }); 
+
+            const newReply = {
+                id: Date.now(),
+                score: 0,
+                user_id:4,
+                content: this.text,
+                parent_comment_id:this.comment.user_id,
+                createdAt: timestamp,
+                updated_at: timestamp
+        };          
+    
+    // To update a resource with the Fetch API is very simple and straightforward, all you have to pass in is the URL of the endpoint as the 1st parameter and an object which contains the details of the method, headers, and body as the 2nd parameter.
+
+    fetch('http://localhost:3000/replies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newReply),
+    })
+    .catch(err => console.log(err))
+    console.log("reply post success")
     }
+    },
+
 
 }
 </script>
@@ -56,13 +91,18 @@ export default {
 }
 
 #text-area {
-    width: 65%;
-   min-height: 100px;
+    width: 85%;
+    height: 100%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
 }
 
 #addcomment {
     resize: none;
-    width: 100%;
+    width: 80%;
     min-height: 80px;
     border: 1px solid hsl(223, 19%, 93%);
     font-size: 13px;
